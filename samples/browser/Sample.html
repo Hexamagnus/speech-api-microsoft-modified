@@ -15,19 +15,13 @@
         </tr>
         <tr>
             <td align="right"><a href="https://www.microsoft.com/cognitive-services/en-us/sign-up" target="_blank">Subscription</a>:</td>
-            <td><input id="key" type="text" size="40" value="YOUR_BING_SPEECH_API_KEY"></td>
+            <td><input id="key" type="text" size="40" value="75fdb8db51b74e4c8d8b7b3c161ff2f9"></td>
         </tr>
         <tr>
             <td align="right">Laguage:</td>
             <td align="left">
                 <select id="languageOptions">
-                    <option value="zh-CN">Chinese - CN</option>
-                    <option value="en-GB">English - GB</option>
-                    <option value="en-US" selected="selected">English - US</option>
-                    <option value="fr-FR">French - FR</option>
-                    <option value="de-DE">German - DE</option>
-                    <option value="it-IT">Italian - IT</option>
-                    <option value="es-ES">Spanish - ES</option>
+                    <option value="es-ES" selected="selected">Spanish - ES</option>
                 </select>
             </td>
         </tr>
@@ -61,6 +55,12 @@
             <td></td>
             <td>Status: <span id="statusDiv"></span></td>
         </tr>
+        <tr>
+            <td></td>
+            <td>
+                <textarea id="buffered_text" style="width:500px;height:200px"></textarea>
+            </td>
+        </tr>
     </table>
 
     <!-- The SDK has a dependency on requirejs (http://requirejs.org/). -->
@@ -73,7 +73,7 @@
     </script>
 
     <!-- SDK REFERENCE -->
-    <script src="../../distrib\speech.browser.sdk-min.js"></script>
+    <script src="../../distrib/speech.browser.sdk-min.js"></script>
 
     <!-- SDK USAGE -->
     <script>
@@ -83,7 +83,7 @@
                 onComplete(SDK);
             });
         }
-        
+
         // Setup the recongizer
         function RecognizerSetup(SDK, recognitionMode, language, format, subscriptionKey) {
             var recognizerConfig = new SDK.RecognizerConfig(
@@ -173,6 +173,7 @@
             phraseDiv = document.getElementById("phraseDiv");
             hypothesisDiv = document.getElementById("hypothesisDiv");
             statusDiv = document.getElementById("statusDiv");
+            buffered_text = document.getElementById("buffered_text");
             key = document.getElementById("key");
             languageOptions = document.getElementById("languageOptions");
             formatOptions = document.getElementById("formatOptions");
@@ -180,7 +181,7 @@
             languageOptions.addEventListener("change", function () {
                 Setup();
             });
-            
+
             formatOptions.addEventListener("change", function () {
                 Setup();
             });
@@ -211,7 +212,7 @@
         });
 
         function Setup() {
-            recognizer = RecognizerSetup(SDK, SDK.RecognitionMode.Interactive, languageOptions.value, SDK.SpeechResultFormat[formatOptions.value], key.value);
+            recognizer = RecognizerSetup(SDK, SDK.RecognitionMode.Conversation, languageOptions.value, SDK.SpeechResultFormat[formatOptions.value], key.value);
         }
 
         function UpdateStatus(status) {
@@ -228,6 +229,7 @@
 
         function UpdateRecognizedPhrase(json) {
              phraseDiv.innerHTML = json;
+             buffered_text.innerHTML += JSON.parse(json).DisplayText + ".\n";
         }
 
         function OnComplete() {
